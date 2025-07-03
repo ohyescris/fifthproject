@@ -1,7 +1,6 @@
 package com.devsuperior.dscommerce.dto;
 
 import java.time.Instant;
-import java.util.HashSet;
 import java.util.Set;
 
 import com.devsuperior.dscommerce.entities.Order;
@@ -18,8 +17,6 @@ public class OrderDTO {
 	private Instant moment;
 	private OrderStatus status;
 
-	private Set<OrderItem> items = new HashSet<>();
-
 	public OrderDTO() {
 	}
 
@@ -27,16 +24,12 @@ public class OrderDTO {
 		this.id = id;
 		this.moment = moment;
 		this.status = status;
-		this.items = items;
 	}
-
+	
 	public OrderDTO(Order order) {
 		id = order.getId();
 		moment = order.getMoment();
 		status = order.getStatus();
-		for (OrderItem item : order.getItems()) {
-			this.items.add(item);
-		}
 	}
 
 	public Long getId() {
@@ -49,10 +42,6 @@ public class OrderDTO {
 
 	public OrderStatus getStatus() {
 		return status;
-	}
-
-	public Set<OrderItem> getItems() {
-		return items;
 	}
 
 }
