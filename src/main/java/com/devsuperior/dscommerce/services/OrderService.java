@@ -18,9 +18,20 @@ public class OrderService {
     private OrderRepository repository;
 
     @Transactional(readOnly = true)
-    public OrderDTO findById(Long id, String email) {
+    public OrderDTO findByIdAndClientEmail(Long id, String email) {
     	try {
-	    	Order order = repository.findByIdAndClientEmail(id, email);
+	    	Order order = repository.searchByIdAndClientEmail(id, email);
+	    	return new OrderDTO(order);
+		}
+    	catch (NullPointerException | EntityNotFoundException e ) {
+            throw new ResourceNotFoundException("Recurso não encontrado");
+        }
+    }
+    
+    @Transactional(readOnly = true)
+    public OrderDTO findById(Long id) {
+    	try {
+	    	Order order = repository.searchById(id);
 	    	return new OrderDTO(order);
 		}
     	catch (NullPointerException | EntityNotFoundException e ) {

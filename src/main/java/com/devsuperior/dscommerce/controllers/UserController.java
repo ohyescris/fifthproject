@@ -18,5 +18,4 @@ public class UserController {
         return "Usuário atual: " + username;
     }
     
-    //  + "\nSua autoridade é: " + jwt.getClaimAsString("authorities")
 }
