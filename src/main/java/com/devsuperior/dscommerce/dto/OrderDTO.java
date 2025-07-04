@@ -20,7 +20,7 @@ public class OrderDTO {
 	public OrderDTO() {
 	}
 
-	public OrderDTO(Long id, Instant moment, OrderStatus status, Set<OrderItem> items) {
+	public OrderDTO(Long id, Instant moment, OrderStatus status) {
 		this.id = id;
 		this.moment = moment;
 		this.status = status;

@@ -89,6 +89,11 @@ public class Order {
     public List<Product> getProducts() {
         return items.stream().map(x -> x.getProduct()).toList();
     }
+    
+    public void addItem(OrderItem item) {
+        items.add(item);
+        item.setOrder(this);
+    }
 
     @Override
     public boolean equals(Object o) {
