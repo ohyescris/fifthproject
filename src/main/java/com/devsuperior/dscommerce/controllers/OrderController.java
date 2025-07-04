@@ -47,8 +47,9 @@ public class OrderController {
     
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
-    public ResponseEntity<OrderMaxDTO> insert(@Valid @RequestBody OrderMaxDTO dto) {
-        dto = service.insert(dto);
+    public ResponseEntity<OrderMaxDTO> insert(@Valid @RequestBody OrderMaxDTO dto, @AuthenticationPrincipal Jwt jwt) {
+    	String username = jwt.getClaimAsString("username");
+        dto = service.insert(dto, username);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(dto.getId()).toUri();
         return ResponseEntity.created(uri).body(dto);

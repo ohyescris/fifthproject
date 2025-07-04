@@ -13,8 +13,10 @@ import com.devsuperior.dscommerce.entities.Order;
 import com.devsuperior.dscommerce.entities.OrderItem;
 import com.devsuperior.dscommerce.entities.OrderStatus;
 import com.devsuperior.dscommerce.entities.Product;
+import com.devsuperior.dscommerce.entities.User;
 import com.devsuperior.dscommerce.repositories.OrderRepository;
 import com.devsuperior.dscommerce.repositories.ProductRepository;
+import com.devsuperior.dscommerce.repositories.UserRepository;
 import com.devsuperior.dscommerce.services.exceptions.ResourceNotFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -24,8 +26,12 @@ public class OrderService {
 
     @Autowired
     private OrderRepository repository;
+    
     @Autowired
     private ProductRepository productRepository;
+    
+    @Autowired
+    private UserRepository userRepository;
 
     @Transactional(readOnly = true)
     public OrderDTO findByIdAndClientEmail(Long id, String email) {
@@ -50,21 +56,24 @@ public class OrderService {
     }
     
     @Transactional
-    public OrderMaxDTO insert(OrderMaxDTO dto) {
+    public OrderMaxDTO insert(OrderMaxDTO dto, String email) {
     	Order entity = new Order();
+    	User tmpUser =userRepository.findByEmail(email);
     	
     	entity.setMoment(Instant.now());
-    	entity.setStatus(OrderStatus.valueOf("WAITING_PAYMENT"));
+    	entity.setStatus(OrderStatus.WAITING_PAYMENT);
+    	entity.setClient(tmpUser);
+    	
     	
     	for (OrderItemDTO itemDTO : dto.getItems()) {
     		OrderItem tmpItem = new OrderItem();
     		Product tmpProduct = productRepository.findById(itemDTO.getProductId()).orElseThrow(
                     () -> new ResourceNotFoundException("Recurso não encontrado"));
     		tmpItem.setProduct(tmpProduct);
-    		tmpItem.setQuantity(itemDTO.getQuantity());
-    		tmpItem.setOrder(entity);
-    		
-    		entity.getItems().add(tmpItem);
+            tmpItem.setQuantity(itemDTO.getQuantity());
+            tmpItem.setPrice(tmpProduct.getPrice());
+            
+            entity.addItem(tmpItem);
     	}
     	
         entity = repository.save(entity);

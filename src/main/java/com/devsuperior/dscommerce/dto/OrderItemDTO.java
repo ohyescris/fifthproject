@@ -14,7 +14,7 @@ public class OrderItemDTO {
 		this.productId = productId;
 		this.quantity = quantity;
 	}
-	
+
 	public OrderItemDTO(OrderItem entity) {
 		productId = entity.getProduct().getId();
 		quantity = entity.getQuantity();
