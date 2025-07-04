@@ -58,7 +58,7 @@ public class OrderService {
     @Transactional
     public OrderMaxDTO insert(OrderMaxDTO dto, String email) {
     	Order entity = new Order();
-    	User tmpUser =userRepository.findByEmail(email);
+    	User tmpUser = userRepository.findByEmail(email).get();
     	
     	entity.setMoment(Instant.now());
     	entity.setStatus(OrderStatus.WAITING_PAYMENT);
