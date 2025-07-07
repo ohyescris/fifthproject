@@ -116,12 +116,13 @@ public class User implements UserDetails {
 	public Set<Role> getRoles() {
 		return roles;
 	}
-
+	
 	public boolean hasRole(String roleName) {
-		for (Role role : roles) {
+		for (Role role : getRoles()) {
 			if (role.getAuthority().equals(roleName)) {
 				return true;
 			}
+			
 		}
 		return false;
 	}

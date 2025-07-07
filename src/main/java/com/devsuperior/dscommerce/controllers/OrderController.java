@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.devsuperior.dscommerce.dto.OrderDTO;
-import com.devsuperior.dscommerce.dto.OrderMaxDTO;
 import com.devsuperior.dscommerce.services.OrderService;
 
 import jakarta.validation.Valid;
@@ -28,8 +27,8 @@ public class OrderController {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CLIENT')")
     @GetMapping(value = "/{id}")
-    public ResponseEntity<OrderMaxDTO> findById(@PathVariable Long id) {
-    	OrderMaxDTO dto = service.findById(id);
+    public ResponseEntity<OrderDTO> findById(@PathVariable Long id) {
+    	OrderDTO dto = service.findById(id);
 		return ResponseEntity.ok(dto);
     }
     
