@@ -14,9 +14,9 @@ import com.devsuperior.dscommerce.entities.OrderItem;
 import com.devsuperior.dscommerce.entities.OrderStatus;
 import com.devsuperior.dscommerce.entities.Product;
 import com.devsuperior.dscommerce.entities.User;
+import com.devsuperior.dscommerce.repositories.OrderItemRepository;
 import com.devsuperior.dscommerce.repositories.OrderRepository;
 import com.devsuperior.dscommerce.repositories.ProductRepository;
-import com.devsuperior.dscommerce.repositories.UserRepository;
 import com.devsuperior.dscommerce.services.exceptions.ResourceNotFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -31,7 +31,10 @@ public class OrderService {
     private ProductRepository productRepository;
     
     @Autowired
-    private UserRepository userRepository;
+    private OrderItemRepository orderItemRepository;
+    
+    @Autowired
+    private UserService userService;
 
     @Transactional(readOnly = true)
     public OrderDTO findByIdAndClientEmail(Long id, String email) {
@@ -45,38 +48,35 @@ public class OrderService {
     }
     
     @Transactional(readOnly = true)
-    public OrderDTO findById(Long id) {
-    	try {
-	    	Order order = repository.searchById(id);
-	    	return new OrderDTO(order);
-		}
-    	catch (NullPointerException | EntityNotFoundException e ) {
-            throw new ResourceNotFoundException("Recurso não encontrado");
-        }
+    public OrderMaxDTO findById(Long id) {
+    	
+    	Order order = repository.findById(id).orElseThrow(
+    			() -> new ResourceNotFoundException("Recurso não encontrado"));
+    	return new OrderMaxDTO(order);
+		
     }
     
     @Transactional
-    public OrderMaxDTO insert(OrderMaxDTO dto, String email) {
-    	Order entity = new Order();
-    	User tmpUser = userRepository.findByEmail(email).get();
+    public OrderDTO insert(OrderDTO dto) {
     	
-    	entity.setMoment(Instant.now());
-    	entity.setStatus(OrderStatus.WAITING_PAYMENT);
-    	entity.setClient(tmpUser);
+    	Order order = new Order();
+    	
+    	order.setMoment(Instant.now());
+    	order.setStatus(OrderStatus.WAITING_PAYMENT);
+    	
+    	User user = userService.authenticated();
+    	order.setClient(user);
     	
     	
-    	for (OrderItemDTO itemDTO : dto.getItems()) {
-    		OrderItem tmpItem = new OrderItem();
-    		Product tmpProduct = productRepository.findById(itemDTO.getProductId()).orElseThrow(
+    	for (OrderItemDTO itemDto : dto.getItems()) {
+    		Product product = productRepository.findById(itemDto.getProductId()).orElseThrow(
                     () -> new ResourceNotFoundException("Recurso não encontrado"));
-    		tmpItem.setProduct(tmpProduct);
-            tmpItem.setQuantity(itemDTO.getQuantity());
-            tmpItem.setPrice(tmpProduct.getPrice());
-            
-            entity.addItem(tmpItem);
+    		OrderItem item = new OrderItem(order, product, itemDto.getQuantity(), product.getPrice());
+    		order.getItems().add(item);
     	}
     	
-        entity = repository.save(entity);
-        return new OrderMaxDTO(entity);
+    	repository.save(order);
+    	orderItemRepository.saveAll(order.getItems());
+        return new OrderDTO(order);
     }
 }

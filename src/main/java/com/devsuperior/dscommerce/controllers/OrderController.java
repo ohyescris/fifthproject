@@ -1,13 +1,10 @@
 package com.devsuperior.dscommerce.controllers;
 
 import java.net.URI;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,27 +26,17 @@ public class OrderController {
     @Autowired
     private OrderService service;
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OPERATOR')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CLIENT')")
     @GetMapping(value = "/{id}")
-    public ResponseEntity<OrderDTO> findById(@PathVariable Long id, @AuthenticationPrincipal Jwt jwt) {
-    	String username = jwt.getClaimAsString("username");
-    	List<String> authorities = jwt.getClaimAsStringList("authorities");
-    	if (authorities.contains("ROLE_ADMIN")) {
-    		OrderDTO dto = service.findById(id);
-    		// poderia ser melhorado o mecanismo de busca aqui, mas não é o objetivo atual
-    		return ResponseEntity.ok(dto);
-    	}
-    	else {
-    		OrderDTO dto = service.findByIdAndClientEmail(id, username);
-    		return ResponseEntity.ok(dto);
-    	}
+    public ResponseEntity<OrderMaxDTO> findById(@PathVariable Long id) {
+    	OrderMaxDTO dto = service.findById(id);
+		return ResponseEntity.ok(dto);
     }
     
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CLIENT')")
     @PostMapping
-    public ResponseEntity<OrderMaxDTO> insert(@Valid @RequestBody OrderMaxDTO dto, @AuthenticationPrincipal Jwt jwt) {
-    	String username = jwt.getClaimAsString("username");
-        dto = service.insert(dto, username);
+    public ResponseEntity<OrderDTO> insert(@Valid @RequestBody OrderDTO dto) {
+        dto = service.insert(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(dto.getId()).toUri();
         return ResponseEntity.created(uri).body(dto);
