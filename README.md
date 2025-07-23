@@ -11,10 +11,10 @@ apresentados apenas DTOs, estes os mesmos construindos utilizando ORM e respeita
 
 ## Autenticação
 
-![OAUTH2](https://github.com/ohyescris/assets/blob/main/images/dscommerce-fifthproject/endpoint-postman-oauth2.jpg)
-
 A aplicação conta com um sistema de verificação de usuários/clientes por token no padrão Oauth2. Tokens são gerados utilizando JWT, a autenticação pede usuário e senha para geração deste
 mesmo token e por um período de tempo o mesmo é válido para o usuário acessar a aplicação.
+
+![OAUTH2](https://github.com/ohyescris/assets/blob/main/images/dscommerce-fifthproject/endpoint-postman-oauth2.jpg)
 
 ## Usuário logado
 
@@ -33,6 +33,42 @@ os pedidos referentes a outros clientes.
 Já um usuário que não tem permissão de admin, não pode acessar pedidos de outros clientes, apenas os dele.
 
 ![GET-ORDER-MARIA-NOT-ALLOWED](https://github.com/ohyescris/assets/blob/main/images/dscommerce-fifthproject/endpoint-postman-order-by-id-maria-user-alex-client-denied.jpg)
+
+## Produtos
+
+Para o controle de produtos, é possível verificar alguns endpoints utilizando os métodos HTTP (GET, POST, PUT e DELETE). Alguns erros são reconhecidos via código, tais quais operações proibidas,
+campos requeridos, quantidade mínimas de caracteres, valores positivos para preços, deletar produtos inexistentes.
+Vale ressaltar também que apenas usuários admin podem mexer nos produtos, porém, clientes podem consultar os pedidos, seja por id ou uma consulta paginada.
+
+### GET 
+
+![GET-PRODUCT-BY-ID](https://github.com/ohyescris/assets/blob/main/images/dscommerce-fifthproject/endpoint-postman-product-by-id-ok.jpg)
+
+![GET-PRODUCT-PAGED-1](https://github.com/ohyescris/assets/blob/main/images/dscommerce-fifthproject/endpoint-postman-product-page-ok.jpg)
+
+![GET-PRODUCT-PAGED-2](https://github.com/ohyescris/assets/blob/main/images/dscommerce-fifthproject/endpoint-postman-product-page-2-ok.jpg)
+
+### POST
+
+![POST-PRODUCT](https://github.com/ohyescris/assets/blob/main/images/dscommerce-fifthproject/endpoint-postman-product-new-ok.jpg)
+
+![POST-PRODUCT-ERROR](https://github.com/ohyescris/assets/blob/main/images/dscommerce-fifthproject/endpoint-postman-product-new-error.jpg)
+
+### PUT
+
+![PUT-PRODUCT](https://github.com/ohyescris/assets/blob/main/images/dscommerce-fifthproject/endpoint-postman-product-put-ok.jpg)
+
+### DELETE
+
+![DELETE-PRODUCT](https://github.com/ohyescris/assets/blob/main/images/dscommerce-fifthproject/endpoint-postman-product-delete.jpg)
+
+Ressaltando que as verificações não são exclusivamente implementadas de acordo com as imagens em que aparecem e sim em diversas operações para garantir um funcionamento eficiente.
+
+## Categorias
+
+Na seção de categorias temos uma busca paginada pelas categorias.
+
+![GET-CATEGORIES](https://github.com/ohyescris/assets/blob/main/images/dscommerce-fifthproject/endpoint-postman-categories.jpg)
 
 # Tecnologias utilizadas back end
 - Java
