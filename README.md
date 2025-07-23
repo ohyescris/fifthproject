@@ -8,8 +8,7 @@ DSCommerce é uma aplicação backend construída durante as aulas do módulo **
 A aplicação consiste em um sistema de entrada e saída de pedidos, produtos, clientes e categorias, como se trata de um projeto de aprendizado, os dados são importados por um seed
 e depois são armazenados no banco de dados, este seed pode ser visualizado pelo Hibernate. Para visualização dos dados é possível utilizar o Postman.
 
-# Tecnologias utilizadas
-## Back end
+# Tecnologias utilizadas back end
 - Java
 - Spring Boot
 - JPA / Hibernate
@@ -17,7 +16,6 @@ e depois são armazenados no banco de dados, este seed pode ser visualizado pelo
 
 # Como executar o projeto
 
-## Back end
 Pré-requisitos: Java 17
 
 ```bash
